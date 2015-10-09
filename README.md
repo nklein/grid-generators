@@ -54,20 +54,22 @@ with:
     (taxicab-distance P)
 
 To generate all of the grid points in `DIMENSIONS`-dimensional space with
-integer taxicab distance from the origin, use the generator:
+integer number of steps in the cardinal directions, use the generator:
 
     (make-taxicab-generator DIMENSIONS
-                            &KEY (MINIMUM-DISTANCE 0)
-                                 MAXIMUM-DISTANCE)
+                            &KEY (MINIMUM-STEPS 0)
+                                 MAXIMUM-STEPS
+                                 SCALE
+                                 OFFSET)
 
 Given a positive integer number of `DIMENSIONS`, a non-negative
-integer `MINIMUM-DISTANCE`, and a non-negative (or null)
-`MAXIMUM-DISTANCE`, return a generator which, on successive calls,
+integer `MINIMUM-STEPS`, and a non-negative (or null)
+`MAXIMUM-STEPS`, return a generator which, on successive calls,
 returns the points in a taxicab-annulus with inner-radius
-`MINIMUM-DISTANCE` and outer-radius `MAXIMUM-DISTANCE`.
+`MINIMUM-STEPS` and outer-radius `MAXIMUM-STEPS`.
 
-`MINIMUM-DISTANCE` must be less than or equal to `MAXIMUM-DISTANCE` (if
-`MAXIMUM-DISTANCE` is non-null).
+`MINIMUM-STEPS` must be less than or equal to `MAXIMUM-STEPS` (if
+`MAXIMUM-STEPS` is non-null).
 
 If `SCALE` is specified, it must be either a list of length `DIMENSIONS`
 of `NUMBER`s or a single `NUMBER`.  The taxicab coordinates will be scaled
@@ -78,12 +80,12 @@ If `OFFSET` is specified, it must be a list of length `DIMENSIONS` of
 `NUMBER`s.  This offset will be added to the taxicab coordinates (after
 they are scaled and) before they are returned.
 
-If `MAXIMUM-DISTANCE` is null, the iteration continues on indefinitely.
+If `MAXIMUM-STEPS` is null, the iteration continues on indefinitely.
 
 For example:
 
     (loop :with generator = (make-taxicab-generator 2
-                                                    :maximum-distance 2
+                                                    :maximum-steps 2
                                                     :scale 2
                                                     :offset '(1 0))
         :for v := (funcall generator)
@@ -96,7 +98,7 @@ For example:
 
 Note: When the scaling is not specified or is constant, this function
 guarantees that it will generate all of the points at the minimum
-distance before moving on to the next greater distance, etc.  It does
-not, however, guarantee the order in which it will generate the points
-at a given distance, just that it will generate all of the points at
-each distance.
+steps before moving on to the next greater number of steps, etc.  It
+does not, however, guarantee the order in which it will generate the
+points at a given number of steps away, just that it will generate all
+of the points at each number of steps.

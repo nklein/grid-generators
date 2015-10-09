@@ -46,6 +46,40 @@
                                             :minimum-distance 3
                                             :maximum-distance 3))
 
+  (nst:def-test 2d-taxicab-scale-single-number (generates ((-6 0) (6 0)
+                                                           (-4 -2) (-4 2)
+                                                           (4 -2) (4 2)
+                                                           (-2 -4) (-2 4)
+                                                           (2 -4) (2 4)
+                                                           (0 -6) (0 6)))
+    (grid-generators:make-taxicab-generator 2
+                                            :minimum-distance 3
+                                            :maximum-distance 3
+                                            :scale 2))
+
+  (nst:def-test 2d-taxicab-scale-and-offset (generates ((-5 2) (7 2)
+                                                        (-3 0) (-3 4)
+                                                        (5 0) (5 4)
+                                                        (-1 -2) (-1 6)
+                                                        (3 -2) (3 6)
+                                                        (1 -4) (1 8)))
+    (grid-generators:make-taxicab-generator 2
+                                            :minimum-distance 3
+                                            :maximum-distance 3
+                                            :scale 2
+                                            :offset '(1 2)))
+
+  (nst:def-test 2d-taxicab-scale-list (generates ((-6 0) (6 0)
+                                                  (-4 -1/2) (-4 1/2)
+                                                  (4 -1/2) (4 1/2)
+                                                  (-2 -1) (-2 1)
+                                                  (2 -1) (2 1)
+                                                  (0 -3/2) (0 3/2)))
+    (grid-generators:make-taxicab-generator 2
+                                            :minimum-distance 3
+                                            :maximum-distance 3
+                                            :scale '(2 1/2)))
+
   (nst:def-test 2d-taxicab-monotonic (monotonic
                                       :key #'grid-generators:taxicab-distance)
     (grid-generators:make-taxicab-generator 3
@@ -110,4 +144,34 @@
   (nst:def-test maximum-less-than-minimum (:err)
     (grid-generators:make-taxicab-generator 1
                                             :minimum-distance 2
-                                            :maximum-distance 1)))
+                                            :maximum-distance 1))
+
+  (nst:def-test scale-not-a-number (:err)
+    (grid-generators:make-taxicab-generator 1
+                                            :minimum-distance 2
+                                            :scale :a))
+
+  (nst:def-test scale-not-a-list-of-number (:err)
+    (grid-generators:make-taxicab-generator 1
+                                            :minimum-distance 2
+                                            :scale '(:a)))
+
+  (nst:def-test scale-not-a-correct-length (:err)
+    (grid-generators:make-taxicab-generator 1
+                                            :minimum-distance 2
+                                            :scale '(1 2)))
+
+  (nst:def-test offset-not-a-list (:err)
+    (grid-generators:make-taxicab-generator 1
+                                            :minimum-distance 2
+                                            :offset 1))
+
+  (nst:def-test offset-not-a-list-of-numbers (:err)
+    (grid-generators:make-taxicab-generator 1
+                                            :minimum-distance 2
+                                            :offset '(:a)))
+
+  (nst:def-test offset-not-right-length (:err)
+    (grid-generators:make-taxicab-generator 1
+                                            :minimum-distance 2
+                                            :offset '(1 2 4))))

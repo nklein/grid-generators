@@ -69,21 +69,34 @@ returns the points in a taxicab-annulus with inner-radius
 `MINIMUM-DISTANCE` must be less than or equal to `MAXIMUM-DISTANCE` (if
 `MAXIMUM-DISTANCE` is non-null).
 
+If `SCALE` is specified, it must be either a list of length `DIMENSIONS`
+of `NUMBER`s or a single `NUMBER`.  The taxicab coordinates will be scaled
+respectively by these amounts (or all by this amount if it is a single
+number) before they are returned.
+
+If `OFFSET` is specified, it must be a list of length `DIMENSIONS` of
+`NUMBER`s.  This offset will be added to the taxicab coordinates (after
+they are scaled and) before they are returned.
+
 If `MAXIMUM-DISTANCE` is null, the iteration continues on indefinitely.
 
 For example:
 
-    (loop :with generator = (make-taxicab-generator 2 :maximum-distance 2)
+    (loop :with generator = (make-taxicab-generator 2
+                                                    :maximum-distance 2
+                                                    :scale 2
+                                                    :offset '(1 0))
         :for v := (funcall generator)
         :while v
         :collecting v)
 
-    => ((0 0)
-        (-1 0) (0 -1) (0 1) (1 0)
-        (-2 0) (-1 -1) (-1 1) (0 -2) (0 2) (1 -1) (1 1) (2 0))
+    => ((1 0)
+        (-1 0) (1 -2) (1 2) (3 0)
+        (-3 0) (-1 -2) (-1 2) (1 -4) (1 4) (3 -2) (3 2) (5 0))
 
-Note: This function guarantees that it will generate all of the points
-at the minimum distance before moving on to the next greater distance,
-etc.  It does not, however, guarantee the order in which it will
-generate the points at a given distance, just that it will generate
-all of the points at each distance.
+Note: When the scaling is not specified or is constant, this function
+guarantees that it will generate all of the points at the minimum
+distance before moving on to the next greater distance, etc.  It does
+not, however, guarantee the order in which it will generate the points
+at a given distance, just that it will generate all of the points at
+each distance.

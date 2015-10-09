@@ -63,12 +63,23 @@ the list of real numbers COORDS."
                   (finish))))))))
 
 (defun make-taxicab-generator (dimensions &key (minimum-distance 0)
-                                            (maximum-distance nil))
+                                            (maximum-distance nil)
+                                            (scale nil)
+                                            (offset nil))
   "Given a positive integer number of DIMENSIONS, a non-negative
 integer MINIMUM-DISTANCE, and a non-negative (or null)
 MAXIMUM-DISTANCE, return a generator which, on successive calls,
 returns the points in a taxicab-annulus with inner-radius
 MINIMUM-DISTANCE and outer-radius MAXIMUM-DISTANCE.
+
+If SCALE is specified, it must be either a list of length DIMENSIONS
+of NUMBERs or a single NUMBER.  The taxicab coordinates will be scaled
+respectively by these amounts (or all by this amount if it is a single
+number) before they are returned.
+
+If OFFSET is specified, it must be a list of length DIMENSIONS of
+NUMBERs.  This offset will be added to the taxicab coordinates (after
+they are scaled and) before they are returned.
 
 MINIMUM-DISTANCE must be less than or equal to MAXIMUM-DISTANCE (if
 MAXIMUM-DISTANCE is non-null).
@@ -77,30 +88,47 @@ If MAXIMUM-DISTANCE is null, the iteration continues on indefinitely.
 
 For example:
 
-    (loop :with generator = (make-taxicab-generator 2 :maximum-distance 2)
+    (loop :with generator = (make-taxicab-generator 2
+                                                    :maximum-distance 2
+                                                    :scale 2
+                                                    :offset '(1 0))
         :for v := (funcall generator)
         :while v
         :collecting v)
 
-    => ((0 0)
-        (-1 0) (0 -1) (0 1) (1 0)
-        (-2 0) (-1 -1) (-1 1) (0 -2) (0 2) (1 -1) (1 1) (2 0))
+    => ((1 0)
+        (-1 0) (1 -2) (1 2) (3 0)
+        (-3 0) (-1 -2) (-1 2) (1 -4) (1 4) (3 -2) (3 2) (5 0))
 
-Note: This function guarantees that it will generate all of the points
-at the minimum distance before moving on to the next greater distance,
-etc.  It does not, however, guarantee the order in which it will
-generate the points at a given distance, just that it will generate
-all of the points at each distance."
+Note: When the scaling is not specified or is constant, this function
+guarantees that it will generate all of the points at the minimum
+distance before moving on to the next greater distance, etc.  It does
+not, however, guarantee the order in which it will generate the points
+at a given distance, just that it will generate all of the points at
+each distance."
 
   (check-type dimensions (integer 1 *))
   (check-type minimum-distance (integer 0 *))
   (check-type maximum-distance (or null (integer 0 *)))
+  (check-type scale (or null number list))
+  (check-type offset (or null list))
 
   (when maximum-distance
     (assert (<= minimum-distance maximum-distance)))
 
+  (when (consp scale)
+    (assert (every #'numberp scale))
+    (assert (= (length scale) dimensions)))
+
+  (when offset
+    (assert (every #'numberp offset))
+    (assert (= (length offset) dimensions)))
+
   (let (last
-        (got t))
+        (got t)
+        (scale (if (numberp scale)
+                   (loop :repeat dimensions :collecting scale)
+                   scale)))
     (lambda ()
       (cond
         ((and got (null last))
@@ -109,4 +137,15 @@ all of the points at each distance."
         (got
          (multiple-value-setq (last got)
            (taxicab-increment last maximum-distance))))
-      (values last got))))
+
+      (flet ((transform (v)
+               (let* ((v (if scale
+                             (mapcar #'* v scale)
+                             v))
+                      (v (if offset
+                             (mapcar #'+ v offset)
+                             v)))
+                 v)))
+        (values (when last
+                  (transform last))
+                got)))))

@@ -3,7 +3,7 @@
 (asdf:defsystem #:grid-generators
   :description "GRID-GENERATORS is a package of functions useful for generating the points in a grid."
   :author "Patrick Stein <pat@nklein.com>"
-  :version "0.1.20151009"
+  :version "0.2.20151009"
   :license "UNLICENSE"
   :depends-on (#:alexandria #:let-plus)
   :in-order-to ((asdf:test-op (asdf:load-op :grid-generators-tests)))
@@ -22,7 +22,7 @@
 (asdf:defsystem #:grid-generators-tests
   :description "Tests for the GRID-GENERATORS package."
   :author "Patrick Stein <pat@nklein.com>"
-  :version "0.1.20151009"
+  :version "0.2.20151009"
   :license "UNLICENSE"
   :depends-on (#:grid-generators #:nst)
   :components

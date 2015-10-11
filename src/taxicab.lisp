@@ -34,6 +34,8 @@
       (t
        (finish)))))
 
+(ensure-sequence-type+ real)
+
 (defun taxicab-distance (coords)
   "Return the total taxicab distance from the origin represented by
 the list of real numbers COORDS."
@@ -61,6 +63,8 @@ the list of real numbers COORDS."
                   (value (taxicab-initial-value (1+ distance)
                                                 (length curs)))
                   (finish))))))))
+
+(ensure-sequence-type number)
 
 (defun make-taxicab-generator (dimensions &key (minimum-steps 0)
                                             (maximum-steps nil)
@@ -106,6 +110,7 @@ steps before moving on to the next greater number of steps, etc.  It
 does not, however, guarantee the order in which it will generate the
 points at a given number of steps away, just that it will generate all
 of the points at each number of steps."
+
 
   (check-type dimensions (integer 1 *))
   (check-type minimum-steps (integer 0 *))

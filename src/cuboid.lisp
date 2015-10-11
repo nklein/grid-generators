@@ -24,6 +24,8 @@
       (t
        (finish)))))
 
+(ensure-sequence-type+ real)
+
 (defun make-grid-generator (to &key from by)
   "Given a list of REAL numbers TO and a list of REAL numbers FROM and
 a list of real numbers BY (all of length N), return a function that on

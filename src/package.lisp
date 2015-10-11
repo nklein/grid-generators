@@ -1,7 +1,7 @@
 ;;;; package.lisp
 
 (defpackage #:grid-generators
-  (:use #:cl)
+  (:use #:cl #:list-types)
   (:export #:make-grid-generator)
   (:export #:taxicab-distance
            #:make-taxicab-generator)

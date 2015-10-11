@@ -5,7 +5,7 @@
   :author "Patrick Stein <pat@nklein.com>"
   :version "0.2.20151009"
   :license "UNLICENSE"
-  :depends-on (#:alexandria #:let-plus)
+  :depends-on (#:alexandria #:let-plus #:list-types)
   :in-order-to ((asdf:test-op (asdf:load-op :grid-generators-tests)))
   :perform (asdf:test-op (o c)
              (uiop:symbol-call :grid-generators-tests :run-all-tests))
@@ -13,11 +13,8 @@
   ((:static-file "README.md")
    (:module "src"
     :components ((:file "package")
-                 (:file "types" :depends-on ("package"))
-                 (:file "cuboid" :depends-on ("package"
-                                              "types"))
-                 (:file "taxicab" :depends-on ("package"
-                                               "types"))))))
+                 (:file "cuboid" :depends-on ("package"))
+                 (:file "taxicab" :depends-on ("package"))))))
 
 (asdf:defsystem #:grid-generators-tests
   :description "Tests for the GRID-GENERATORS package."

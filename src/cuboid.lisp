@@ -55,9 +55,9 @@ covered."
   (let ((from (or from (mapcar (constantly 0) to)))
         (by (or by (mapcar (constantly 1) to))))
 
-    (check-type to list-of-reals)
-    (check-type from list-of-reals)
-    (check-type by list-of-reals)
+    (check-type to (list-of+ real))
+    (check-type from (list-of+ real))
+    (check-type by (list-of+ real))
 
     (assert (= (length to) (length from)))
     (assert (= (length to) (length by)))

@@ -37,13 +37,13 @@
 (defun taxicab-distance (coords)
   "Return the total taxicab distance from the origin represented by
 the list of real numbers COORDS."
-  (check-type coords list-of-reals)
+  (check-type coords (list-of+ real))
   (reduce #'+ coords :key #'abs))
 
 (defun taxicab-initial-value (distance dimensions)
   (when (plusp dimensions)
     (list* (- distance)
-           (alexandria:iota (1- dimensions) :start 0 :step 0))))
+           (loop :repeat (1- dimensions) :collecting 0))))
 
 (defun taxicab-increment (curs max-distance)
   (flet ((value (val)
@@ -110,18 +110,16 @@ of the points at each number of steps."
   (check-type dimensions (integer 1 *))
   (check-type minimum-steps (integer 0 *))
   (check-type maximum-steps (or null (integer 0 *)))
-  (check-type scale (or null number list))
-  (check-type offset (or null list))
+  (check-type scale (or number (list-of number)))
+  (check-type offset (list-of number))
 
   (when maximum-steps
     (assert (<= minimum-steps maximum-steps)))
 
   (when (consp scale)
-    (assert (every #'numberp scale))
     (assert (= (length scale) dimensions)))
 
-  (when offset
-    (assert (every #'numberp offset))
+  (when (consp offset)
     (assert (= (length offset) dimensions)))
 
   (let (last

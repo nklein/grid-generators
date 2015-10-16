@@ -4,9 +4,10 @@
   :description "GRID-ITERATE provides functions useful for iterating
 the points in grids using ITERATE."
   :author "Patrick Stein <pat@nklein.com>"
-  :version "0.3.20151015"
+  :version "0.4.20151016"
   :license "UNLICENSE"
-  :depends-on (#:alexandria #:iterate #:grid-generators)
+  :depends-on (#:alexandria #:iterate (:version #:grid-generators
+                                                "0.4.20151016"))
   :in-order-to ((asdf:test-op (asdf:load-op :grid-iterate-tests)))
   :perform (asdf:test-op (o c)
              (uiop:symbol-call :grid-iterate-tests :run-all-tests))
@@ -17,14 +18,15 @@ the points in grids using ITERATE."
     ((:module "iterate"
       :components ((:file "package")
                    (:file "cuboid" :depends-on ("package"))
-                   (:file "taxicab" :depends-on ("package"))))))))
+                   (:file "taxicab" :depends-on ("package"))
+                   (:file "lattice" :depends-on ("package"))))))))
 
 (asdf:defsystem #:grid-iterate-tests
   :description "Tests for the GRID-ITERATE package."
   :author "Patrick Stein <pat@nklein.com>"
-  :version "0.3.20151015"
+  :version "0.4.20151016"
   :license "UNLICENSE"
-  :depends-on (#:grid-iterate #:nst)
+  :depends-on ((:version #:grid-iterate "0.4.20151016") #:nst)
   :components
   ((:module "test"
     :components
@@ -35,6 +37,9 @@ the points in grids using ITERATE."
                                                 "criterion"))
                    (:file "taxicab" :depends-on ("package"
                                                  "criterion"))
+                   (:file "lattice" :depends-on ("package"
+                                                 "criterion"))
                    (:file "run" :depends-on ("package"
                                              "cuboid"
-                                             "taxicab"))))))))
+                                             "taxicab"
+                                             "lattice"))))))))

@@ -2,7 +2,7 @@ GRID-GENERATORS Package
 =======================
 
 This package provides functions useful for generating the points in a
-grid.  There are two generator constructors.  Each returns a function.
+grid.  There are three generator constructors.  Each returns a function.
 Upon successive calls to the returned function, it returns two values:
 the coordinates of the next point in the grid (or `NIL` if the grid
 has been exhausted) and `T` if a grid point was returned as the first
@@ -103,6 +103,44 @@ does not, however, guarantee the order in which it will generate the
 points at a given number of steps away, just that it will generate all
 of the points at each number of steps.
 
+Generating Points In An Arbitrary Lattice
+-----------------------------------------
+
+Given a list of `BASIS-VECTORS` (each a list of `NUMBER`s with all
+lists the same length), a non-negative integer `MINIMUM-STEPS`, and a
+non-negative (or null) `MAXIMUM-STEPS`, return a generator which, on
+successive calls, returns points on the scaled lattice centered at the
+offset with the given basis vectors starting with those points which
+can be reached with the `MINIMUM-STEPS` and proceeding through more and
+more steps until those points at `MAXIMUM-STEPS` have all been
+enumerated.
+
+If `SCALE` is specified, it must be either a list of the same length as
+the basis vectors of `NUMBER`s or a single `NUMBER`.  The point's
+coordinates will be scaled by this amount before they are returned.
+
+If `OFFSET` is specified, it must be a list of same length as the basis
+vectors of `NUMBER`s.  This offset will be added to the
+coordinates (after they are scaled and) before they are returned.
+
+`MINIMUM-STEPS` must be less than or equal to `MAXIMUM-STEPS` (if
+`MAXIMUM-STEPS` is non-null).
+
+If `MAXIMUM-STEPS` is null, the iteration continues on indefinitely.
+
+For example:
+
+    (loop :with generator = (make-lattice-generator '((#C(1 0)) (#C(0 1)))
+                                                    :maximum-steps 1
+                                                    :scale 2
+                                                    :offset '(#C(1/2 1/2)))
+        :for v := (funcall generator)
+        :while v
+        :collecting (first v))
+
+    => (#C(1/2 1/2) #C(-3/2 1/2) #C(1/2 -3/2) #C(1/2 5/2) #C(5/2 1/2))
+
+
 GRID-ITERATE Package
 ====================
 
@@ -148,3 +186,27 @@ These parameters relate directly to their namesakes in the
     => ((1 0)
         (-1 0) (1 -2) (1 2) (3 0)
         (-3 0) (-1 -2) (-1 2) (1 -4) (1 4) (3 -2) (3 2) (5 0))
+
+Iterating Points In An Arbitrary Lattice
+----------------------------------------
+
+The iterate clause for generating points in an arbitrary lattice is:
+
+    (ITERATE:FOR var BY-LATTICE-STEPS basis-vectors
+             &optional MINIMUM-STEPS min-steps
+                       MAXIMUM-STEPS max-steps
+                       WITH-SCALE scale
+                       WITH-OFFSET offset)
+
+These parameters relate directly to their namesakes in the
+`GRID-GENERATORS` package.  So, for example, you could:
+
+    (iterate:iterate (iterate:for v by-lattice-steps '((1 -1) (1 1))
+                               maximum-steps 2
+                               with-scale 2
+                               with-offset '(1 0))
+                     (iterate:collect v))
+
+    => ((1 0)
+        (-1 2) (-1 -2) (3 2) (3 -2)
+        (-3 4) (-3 0) (1 4) (-3 -4) (5 4) (1 -4) (5 0) (5 -4))

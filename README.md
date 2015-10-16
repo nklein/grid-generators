@@ -102,3 +102,49 @@ steps before moving on to the next greater number of steps, etc.  It
 does not, however, guarantee the order in which it will generate the
 points at a given number of steps away, just that it will generate all
 of the points at each number of steps.
+
+GRID-ITERATE Package
+====================
+
+This package provides `ITERATE` drivers for the generators in the
+`GRID-GENERATORS` package.
+
+Iterating Points In A Cube
+--------------------------
+
+The iterate clause for generating the points on the grid is:
+
+    (ITERATE:FOR var ON-GRID-TO to &optional FROM from BY by)
+
+These parameters relate directly to their namesakes in the
+`GRID-GENERATORS` package.  So, for example, you could:
+
+    (iterate:iterate (iterate:for v on-grid-to '(2 2) by '(1 2))
+                     (iterate:collecting v))
+
+    => ((0 0) (1 0) (2 0) (0 2) (1 2) (2 2))
+
+
+Iterating Points By Taxicab Distance
+------------------------------------
+
+The iterate clause for generating points by taxicab distance is:
+
+    (ITERATE:FOR var BY-TAXICAB-STEPS-IN-DIMENSIONS dimensions
+             &optional MINIMUM-STEPS min-steps
+                       MAXIMUM-STEPS max-steps
+                       WITH-SCALE scale
+                       WITH-OFFSET offset)
+
+These parameters relate directly to their namesakes in the
+`GRID-GENERATORS` package.  So, for example, you could:
+
+    (iterate:iterate (iterate:for v by-taxicab-steps-in-dimensions 2
+                               maximum-steps 2
+                               with-scale 2
+                               with-offset '(1 0))
+                     (iterate:collect v))
+
+    => ((1 0)
+        (-1 0) (1 -2) (1 2) (3 0)
+        (-3 0) (-1 -2) (-1 2) (1 -4) (1 4) (3 -2) (3 2) (5 0))

@@ -30,4 +30,11 @@ the points in grids using ITERATE."
     :components
     ((:module "iterate"
       :components ((:file "package")
-                   (:file "run" :depends-on ("package"))))))))
+                   (:file "criterion" :depends-on ("package"))
+                   (:file "cuboid" :depends-on ("package"
+                                                "criterion"))
+                   (:file "taxicab" :depends-on ("package"
+                                                 "criterion"))
+                   (:file "run" :depends-on ("package"
+                                             "cuboid"
+                                             "taxicab"))))))))

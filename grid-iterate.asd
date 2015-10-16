@@ -4,7 +4,7 @@
   :description "GRID-ITERATE provides functions useful for iterating
 the points in grids using ITERATE."
   :author "Patrick Stein <pat@nklein.com>"
-  :version "0.1.20151011"
+  :version "0.3.20151015"
   :license "UNLICENSE"
   :depends-on (#:alexandria #:iterate #:grid-generators)
   :in-order-to ((asdf:test-op (asdf:load-op :grid-iterate-tests)))
@@ -22,7 +22,7 @@ the points in grids using ITERATE."
 (asdf:defsystem #:grid-iterate-tests
   :description "Tests for the GRID-ITERATE package."
   :author "Patrick Stein <pat@nklein.com>"
-  :version "0.1.20151011"
+  :version "0.3.20151015"
   :license "UNLICENSE"
   :depends-on (#:grid-iterate #:nst)
   :components
